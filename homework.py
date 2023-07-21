@@ -1,5 +1,15 @@
+from typing import Dict, Type
+
+
 class InfoMessage:
     """Информационное сообщение о тренировке."""
+
+    # Константа класса
+    MESSAGE_TEMPLATE: str = ("Тип тренировки: {training_type}; "
+                             "Длительность: {duration:.3f} ч.; "
+                             "Дистанция: {distance:.3f} км; "
+                             "Ср. скорость: {speed:.3f} км/ч; "
+                             "Потрачено ккал: {calories:.3f}.")
 
     def __init__(
             self, training_type: str,
@@ -16,11 +26,13 @@ class InfoMessage:
 
     def get_message(self) -> str:
         """Вернуть информационное сообщение в виде строки."""
-        info = (f"Тип тренировки: {self.training_type}; "
-                f"Длительность: {self.duration:.3f} ч.; "
-                f"Дистанция: {self.distance:.3f} км; "
-                f"Ср. скорость: {self.speed:.3f} км/ч; "
-                f"Потрачено ккал: {self.calories:.3f}.")
+        info = self.MESSAGE_TEMPLATE.format(
+            training_type=self.training_type,
+            duration=self.duration,
+            distance=self.distance,
+            speed=self.speed,
+            calories=self.calories
+        )
         return info
 
 
@@ -145,17 +157,17 @@ class Swimming(Training):
 
 def read_package(training_type: str, data: list) -> Training:
     """Прочитать данные, полученные от датчиков."""
-    training_types = {
+    training_types: Dict[str, Type[Training]] = {
         'RUN': Running,
         'WLK': SportsWalking,
         'SWM': Swimming
     }
 
-    if training_type in training_types:
-        TrainingClass = training_types[training_type]
-        return TrainingClass(*data)
-    else:
+    if ValueError in training_types:
         raise ValueError(f"Unknown workout type: {training_type}")
+
+    training_class = training_types[training_type]
+    return training_class(*data)
 
 
 def main(main_training: Training) -> None:
