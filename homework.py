@@ -162,8 +162,8 @@ def read_package(training_type: str, data: list) -> Training:
         'WLK': SportsWalking,
         'SWM': Swimming
     }
-
-    if ValueError in training_types:
+    # спасибо! понял)
+    if training_type not in training_types:
         raise ValueError(f"Unknown workout type: {training_type}")
 
     training_class = training_types[training_type]
